@@ -9,7 +9,8 @@ var qschema = new schema({
     op3:{type:String,required:true},
     category:{type:String,required:true},
     difficulty:{type:String,required:true},
-    qimage:{type:String}
+    qimage:{type:String},
+    answer:{type:String,required:true,default:"0"}
 });
 
 var qmodel = mongoose.model("question",qschema,"questions");

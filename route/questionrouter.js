@@ -32,6 +32,7 @@ router.post("/add",(req,res)=>{
     q1.op3 = req.body.opt[2];
     q1.category = req.body.category;
     q1.difficulty = req.body.difficulty;
+    q1.answer = req.body.answer;
     q1.save((err,result)=>{
         if(err) throw err;
         else{
@@ -47,7 +48,8 @@ router.post("/update/:id",(req,res)=>{
         op2 :  req.body.opt[1],
         op3 : req.body.opt[2],
         category : req.body.category,
-        difficulty : req.body.difficulty
+        difficulty : req.body.difficulty,
+        answer:req.body.answer
     }},(err)=>{
         if(err) throw err;
         else{
