@@ -13,7 +13,7 @@ app.use(bodyparser.urlencoded({extended:true}));
 app.use(bodyparser.json());
 var url = "mongodb+srv://sonyrenjita:mangoHONET@cluster0-sbret.mongodb.net/Quiz?retryWrites=true&w=majority";
 //var url = "mongodb://localhost/mydb1";
-mongoose.connect(url,{useNewUrlParser:true},(err)=>{
+mongoose.connect(url,{useNewUrlParser:true, useUnifiedTopology:true,useCreateIndex:true},(err)=>{
     if(err) throw err;
     else{
         console.log("connected");
@@ -30,14 +30,35 @@ app.use(function (req, res, next) {
 app.use(express.static(path.join(__dirname,"/public")));
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(bodyparser.json());
-// app.use("/user",urouter);
+app.use("/user",urouter);
 app.use("/question",qrouter);
 
 app.listen(process.env.PORT || 8000,(req,res)=>{
     console.log("server listening at 8000");
 });
-app.get("/",(req,res)=>{
-    question.find({},(err,result)=>{
+app.post("/questionnaire",(req,res)=>{
+    var catfilter = req.body.category;
+    var textFilter = req.body.search;
+    var difFilter = req.body.difficulty;
+    var queryParam = {};
+        
+    if(catfilter != "All"){
+        queryParam["category"] = catfilter;
+    }
+    if(difFilter != ""){
+        queryParam["difficulty"] = difFilter;
+    }
+    if(textFilter != ""){
+        var searchFields = ["question","op1","op2","op3"];
+        var wrapper = [];
+        searchFields.forEach((field)=>{
+            var textQuery = {};
+            textQuery[field] = new RegExp(textFilter,'i');
+            wrapper.push(textQuery);  
+        })
+        queryParam["$or"] = wrapper;
+    }    
+    question.find(queryParam).exec((err,result)=>{
         if(err) throw err;
         else{
             res.send(result);

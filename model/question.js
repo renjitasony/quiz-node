@@ -10,7 +10,7 @@ var qschema = new schema({
     category:{type:String,required:true},
     difficulty:{type:String,required:true},
     qimage:{type:String},
-    answer:{type:String,required:true,default:"0"}
+    answer:{type:String,required:true,default:"0"},
 });
 
 var qmodel = mongoose.model("question",qschema,"questions");

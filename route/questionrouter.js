@@ -16,7 +16,7 @@ var storage = multer.diskStorage({
 });
 var upload = multer({storage:storage});
 
-router.get("/:id",(req,res)=>{
+router.get("/get/:id",(req,res)=>{
     question.findOne({_id:req.params.id},(err,result)=>{
         if(err) throw err;
         else{
@@ -78,4 +78,28 @@ router.get("/delete/:id",(req,res)=>{
             res.send({msg:"Deleted"});
         }
     })
-})
+});
+router.get("/getquiz/:category/:limit",(req,res)=>{
+//    question.find({}).limit(10).exec((err,result)=>{
+//         if(err) throw err;
+//         res.send(result);
+//     });
+    var limit = parseInt(req.params.limit);
+    var catFilter = req.params.category;
+    var queryParam = [];
+    if(catFilter != "misc"){
+        var matchParam = {$match:{category:new RegExp(catFilter,'i')}};
+        queryParam.push(matchParam);
+    }
+    queryParam.push({$sample:{size:limit}});
+    question.aggregate(queryParam).exec((err,result)=>{
+        if(err) throw err;
+        else{
+            res.send(result);   
+        }
+    })
+    // question.aggregate([{$match:{category:req.params.category}},
+    //                     {$sample:{size:10}}]).exec((err,result)=>{
+    //     res.send(result);
+    // });
+});
