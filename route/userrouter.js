@@ -33,3 +33,13 @@ router.post("/authenticate",(req,res)=>{
         }
     })
 })
+router.get("/storeuserdata/:userId/:score",(req,res)=>{
+    user.updateOne({_id:req.params.userId},
+        {$set:{totalscore:req.params.score}},
+        (err)=>{
+            if(err) throw err;
+            else{
+                res.send({msg:"Updated"});
+            }
+        });
+});
